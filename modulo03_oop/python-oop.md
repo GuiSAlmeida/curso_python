@@ -1,7 +1,10 @@
 # Programação Orientada a Objetos com Python
 
-## 1. Convenções de nomes em Python  
+## 1. Introdução
+Python se difere bastante de outras linguagens de programação que tem suporte, ou que são totalmente voltadas a orientação a objetos.  
+Por isso resovi criar este pequeno guia com alguns detalhes da linguagem voltados para programação orientada a objetos.
 
+### 1.1. Convenções de nomes em Python  
 Essas convenções tem um nome que podemos usar para nos referir ao modo como estamos nomeando determinados objetos em nosso programa:
 
 **PascalCase** - significa que todas as palavras iniciam com letra maiúscula e nada é usado para separá-las, como em: `MinhaClasse`, `Classe`, `MeuObjeto`, `MeuProgramaMuitoLegal`.  
@@ -17,6 +20,7 @@ Todas as letras serão minúsculas e separadas por um underline, como em: `minha
 `snake_case` para qualquer coisa e `PascalCase` para classes.
 
 ## 2. Classes
+Classes proporcionam uma forma de organizar dados e funcionalidades juntos. Criar uma nova classe cria um novo “tipo” de objeto, permitindo que novas “instâncias” desse tipo sejam produzidas. Cada instância da classe pode ter atributos anexados a ela, para manter seu estado. Instâncias da classe também podem ter métodos (definidos pela classe) para modificar seu estado.
 ### 2.1. Declarar classe
 ```python
 class Pessoa:
@@ -25,7 +29,7 @@ class Pessoa:
 
 ### 2.2. Importar classe
 ```python
-from pessoa import Pessoa
+from arquivo import Classe
 ```
 
 ## 3. Atributos
@@ -59,7 +63,7 @@ print(Cls.num)
 ## 4. Métodos
 ### 4.1. Métodos de instância
 #### `__init__`
-É o construtor da classe, método que é chamado assim que a classe for instanciada.
+Pode ser usado como construtor da classe, apesar de não ser criado especificamente para isso, é chamado assim que a classe for instanciada.
 ```python
 class Pessoa:
     def __init__(self, nome):
@@ -117,7 +121,15 @@ class Pessoa:
         return rand
 ```
 
-## 5.Getters & Setters
+
+
+## 5. Encapsulamento
+O encapsulamento é um dos pilares da orientação a objetos. Serve para proteger dados da classe. 
+Encapsular os dados de uma aplicação significa evitar que estes sofram acessos indevidos.  
+Para isso, é criada uma estrutura onde são usados modificadores como `public, protected, private` para restringir a acesso a esses dados.  
+E métodos que podem ser utilizados por qualquer outra classe, sem causar inconsistências no desenvolvimento comumente chamados **getters e setters**.  
+
+### 5.1. Getters & Setters
 Esses métodos são chamados logo que um objeto é instanciado a partir da classe, servem como um **filtro**.  
 
 O método `getter` obtém um valor para o atributo da instância. 
@@ -143,3 +155,175 @@ class Produto:
         self._nome = nome.title()
 
 ```
+
+### 5.2. Modificadores
+
+Em python **não temos modificadores** para restringir o acesso a dados da classe.  
+Portanto ao nomear atributos e métodos segue-se uma **convenção**:  
+**nome = public**  
+**_nome = protected**  
+**__nome = private**  
+
+Na prática os atributos ou métodos ainda podem ser acessados e modificados,  
+o que muda é que quando criado com `__` o python não deixa ser reatribuido valor  
+para essa variável, ele acaba criando outra com mesmo nome na instância: `obj.__nome`.  
+E para acessar o valor da variavel original deve colocar o nome da classe antes: `obj._Classe__nome`.
+
+**Exemplo:**
+```python
+class Dados:
+    def __init__(self):
+        self.publicos = {}
+        self._protegidos = {}
+        self.__privados = {}
+
+    # getter para obter valor fora da classe/objeto
+    @property
+    def protegidos(self):
+        return self._protegidos
+
+    # setter para setar valor fora da classe/objeto
+    @protegidos.setter
+    def protegidos(self, valor):
+        self._protegidos = valor
+```
+
+## 6. Relações entre classes
+### 6.1. Associação
+Ela descreve um vínculo que ocorre entre classes.  
+A forma mais comum de implementar associação é ter um objeto como atributo de outro, neste exemplo, abaixo:
+
+```python
+class Escritor:
+    def __init__(self, nome):
+        self.__nome = nome
+        self.__ferramenta = None
+
+    @property
+    def nome(self):
+        return self.__nome
+
+    @property
+    def ferramenta(self):
+        return self.__ferramenta
+
+    @ferramenta.setter
+    def ferramenta(self, ferramenta):
+        self.__ferramenta = ferramenta
+        
+
+class Caneta:
+    def __init__(self, marca):
+        self.__marca = marca
+
+    @property
+    def marca(self):
+        return self.__marca
+
+    def escrever(self):
+        print('Caneta está escrevendo...')
+        
+    
+escritor = Escritor('João')
+caneta = Caneta('Bic')
+
+escritor.ferramenta = caneta
+escritor.ferramenta.escrever()
+```
+#### 6.1.1. Agregação
+É um tipo especial de associação onde tenta-se demonstrar que as informações de um objeto (chamado objeto-todo) 
+precisam ser complementados pelas informações contidas em um ou mais objetos de outra classe (chamados objetos-parte) 
+conhecemos como **todo/parte**. Porém essas partes podem existir separadamente.
+
+Neste exemplo de agregação os classes podem existir separadamente porém funcionam melhor quando o carrinho possui produtos.
+```python
+class Produto:
+    def __init__(self, nome, valor):
+        self.nome = nome
+        self.valor = valor
+
+class CarrinhoCompras:
+    def __init__(self, ):
+        self.produtos = []
+
+    def inserir_produto(self, produto):
+        self.produtos.append(produto)
+
+    def lista_produtos(self):
+        for produto in self.produtos:
+            print(f'{produto.nome}: R${produto.valor}')
+
+    def soma_total(self):
+        total = 0
+        for produto in self.produtos:
+            total += produto.valor
+        return f'R${total}'
+    
+    
+carrinho = CarrinhoCompras()
+p1 = Produto('Bone', 50)
+p2 = Produto('cueca', 20)
+p3 = Produto('tenis', 150)
+carrinho.inserir_produto(p1)
+carrinho.inserir_produto(p2)
+carrinho.inserir_produto(p3)
+carrinho.lista_produtos()
+# Bone: R$50
+# cueca: R$20
+# tenis: R$150
+print(carrinho.soma_total())
+# R$220
+```
+
+#### 6.1.2. Composição  
+Uma composição tenta representar também uma relação todo/parte.  
+No entanto, na composição o objeto-todo é responsável por criar e destruir suas partes.  
+Em uma composição um mesmo objeto-parte não pode se associar a mais de um objeto-todo.  
+
+No exemplo abaixo, o objeto cliente possui um objeto endereço na sua lista de endereços, nesse caso quando o objeto cliente que é o objeto-todo for excluido,
+o objeto endereço também será.
+```python
+class Cliente:
+    def __init__(self, nome):
+        self.__nome = nome
+        self.__enderecos = []
+
+    @property
+    def nome(self):
+        return self.__nome
+
+    @nome.setter
+    def nome(self, nome):
+        self.__nome = nome
+
+    def inseri_endereco(self, cidade):
+        self.__enderecos.append(Endereco(cidade))
+
+    def lista_enderecos(self):
+        for endereco in self.__enderecos:
+            print(endereco.cidade)
+
+class Endereco:
+    def __init__(self, cidade):
+        self.__cidade = cidade
+
+    @property
+    def cidade(self):
+        return self.__cidade
+
+    @cidade.setter
+    def cidade(self, cidade):
+        self.__cidade = cidade
+
+cliente1 = Cliente('João')
+cliente1.inseri_endereco('Florianópolis')
+print(cliente1.nome)
+# João
+cliente1.lista_enderecos()
+# Florianópolis
+del cliente1
+```
+
+## x. Referências
+- https://www.udemy.com/course/python-3-do-zero-ao-avancado/
+- https://docs.python.org/pt-br/3/tutorial/
