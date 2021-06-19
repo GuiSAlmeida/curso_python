@@ -160,9 +160,11 @@ class Produto:
 
 Em python **não temos modificadores** para restringir o acesso a dados da classe. 
 Portanto ao nomear atributos e métodos segue-se uma **convenção**:  
-**nome = public**  
-**_nome = protected**  
-**__nome = private**  
+```properties
+nome = public
+_nome = protected  
+__nome = private 
+```
 
 Na prática os atributos ou métodos ainda podem ser acessados e modificados, 
 o que muda é que quando criado com `__` o python não deixa ser reatribuido valor 
