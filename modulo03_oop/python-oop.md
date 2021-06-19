@@ -33,13 +33,13 @@ from arquivo import Classe
 ```
 
 ## 3. Atributos
-Os atributos podem ser definidos direto dentro da classe **(Atributo de Classe)**  
+Os atributos podem ser definidos direto dentro da classe **(Atributo de Classe)** 
 ou dentro dos métodos criados na classe **(Atributos da Instância)**.  
 
-A diferença é que o atributo da classe pode ser acessado e alterado pela classe  
+A diferença é que o atributo da classe pode ser acessado e alterado pela classe 
 mas as instâncias só podem acessá-lo mas não conseguem alterá-lo.
 
-Caso a instância atribua um novo valor para o atributo de mesmo nome que herdou da classe  
+Caso a instância atribua um novo valor para o atributo de mesmo nome que herdou da classe 
 acabará por criar um novo atributo de instância enquanto o atributo da classe permanece inalterado.  
 
 ```python
@@ -70,7 +70,7 @@ class Pessoa:
         self.nome = nome
 ```
 #### `self`
-Todos **métodos de instância** da classe recebem como primeiro atributo o `self`,  
+Todos **métodos de instância** da classe recebem como primeiro atributo o `self`, 
 ele refere-se a instancia que foi criada a partir da classe.
 
 ```python
@@ -86,8 +86,8 @@ Atributos da classe podem ser declarados no construtor sendo atribuidos os valor
 como também serem criados diretos na classe sendo acessiveis para todas instancias criadas através do self.
 
 ### 4.2. Métodos da classe
-Além dos **métodos de instância** que ficam disponiveis para cada objeto instanciado a partir da classe,  
-também podem ser criados métodos próprios da classe onde ficam acessiveis apenas para a classe em si  
+Além dos **métodos de instância** que ficam disponiveis para cada objeto instanciado a partir da classe, 
+também podem ser criados métodos próprios da classe onde ficam acessiveis apenas para a classe em si 
 e não para objetos instanciados a partir da classe.
 Para esse comportamento devemos passar antes um decorator chamado `@classmethod` e o primeiro parâmetro passa a ser a própria classe `(cls)`.
 ```python
@@ -105,7 +105,7 @@ class Pessoa:
 ```
 
 ### 4.3. Métodos estáticos
-São métodos que **não recebem** o contexto da instância e da classe,  
+São métodos que **não recebem** o contexto da instância e da classe, 
 poderiam até ser criados fora da classe, mas se necessário podem ser criados dentro da classe.  
 Deve-se adicionar um decorator `@staticmethod` antes da assinatura do método.
 ```python
@@ -137,7 +137,7 @@ E deve conter o decorador `@property` antes de sua assinatura.
 
 O método `setter` configura um valor para o atributo. 
 Deve conter um decorador com mesmo nome do atributo seguido de setter.
-Por convenção deve-se retornar 
+Por convenção deve-se retornar o atributo com um _ atrás.
 
 ```python
 class Produto:    
@@ -158,15 +158,15 @@ class Produto:
 
 ### 5.2. Modificadores
 
-Em python **não temos modificadores** para restringir o acesso a dados da classe.  
+Em python **não temos modificadores** para restringir o acesso a dados da classe. 
 Portanto ao nomear atributos e métodos segue-se uma **convenção**:  
 **nome = public**  
 **_nome = protected**  
 **__nome = private**  
 
-Na prática os atributos ou métodos ainda podem ser acessados e modificados,  
-o que muda é que quando criado com `__` o python não deixa ser reatribuido valor  
-para essa variável, ele acaba criando outra com mesmo nome na instância: `obj.__nome`.  
+Na prática os atributos ou métodos ainda podem ser acessados e modificados, 
+o que muda é que quando criado com `__` o python não deixa ser reatribuido valor 
+para essa variável, ele acaba criando outra com mesmo nome na instância: `obj.__nome`. 
 E para acessar o valor da variavel original deve colocar o nome da classe antes: `obj._Classe__nome`.
 
 **Exemplo:**
@@ -189,6 +189,12 @@ class Dados:
 ```
 
 ## 6. Relações entre classes
+
+- Associação (Usa outra classe)
+- Agregação (Tem outra classe)
+- Composição (É dono de outra classe)
+- Herança (É outra classe)
+
 ### 6.1. Associação
 Ela descreve um vínculo que ocorre entre classes.  
 A forma mais comum de implementar associação é ter um objeto como atributo de outro, neste exemplo, abaixo:
@@ -230,10 +236,10 @@ caneta = Caneta('Bic')
 escritor.ferramenta = caneta
 escritor.ferramenta.escrever()
 ```
-#### 6.1.1. Agregação
+### 6.2. Agregação
 É um tipo especial de associação onde tenta-se demonstrar que as informações de um objeto (chamado objeto-todo) 
 precisam ser complementados pelas informações contidas em um ou mais objetos de outra classe (chamados objetos-parte) 
-conhecemos como **todo/parte**. Porém essas partes podem existir separadamente.
+conhecemos como **todo/parte**. Porém essas partes podem existir separadamente.  
 
 Neste exemplo de agregação os classes podem existir separadamente porém funcionam melhor quando o carrinho possui produtos.
 ```python
@@ -275,9 +281,9 @@ print(carrinho.soma_total())
 # R$220
 ```
 
-#### 6.1.2. Composição  
-Uma composição tenta representar também uma relação todo/parte.  
-No entanto, na composição o objeto-todo é responsável por criar e destruir suas partes.  
+### 6.3. Composição  
+Uma composição tenta representar também uma relação todo/parte. 
+No entanto, na composição o objeto-todo é responsável por criar e destruir suas partes. 
 Em uma composição um mesmo objeto-parte não pode se associar a mais de um objeto-todo.  
 
 No exemplo abaixo, o objeto cliente possui um objeto endereço na sua lista de endereços, nesse caso quando o objeto cliente que é o objeto-todo for excluido,
@@ -322,6 +328,62 @@ print(cliente1.nome)
 cliente1.lista_enderecos()
 # Florianópolis
 del cliente1
+```
+
+### 6.4. Herança 
+Um objeto pode ter métodos e atributos de outra classe por herança, 
+isso significa que a classe tem todas caracteristicas da classe herdada, 
+além de poder ter as suas próprias também.  
+
+Uma das grandes vantagens de usar o recurso da herança é na reutilização do código. 
+Esse reaproveitamento pode ser acionado quando se identifica que o atributo ou método de uma classe será igual para as outras. 
+Para efetuar uma herança de uma classe é passado o nome da classe como parâmetro.  
+
+```python
+# superclasse
+class Pessoa:
+    def __init__(self, nome):
+        self.__nome = nome
+        
+    @property
+    def nome(self):
+        return self.__nome
+    
+    @nome.setter
+    def nome(self, nome):
+        self.__nome = nome
+
+    def falar(self):
+        print(f'{self.nome} está falando...')
+
+
+# subclasses
+class Cliente(Pessoa):
+    def comprar(self):
+        print(f'{self.nome} comprando...')
+
+
+class Aluno(Pessoa):
+    def estudar(self):
+        print(f'{self.nome} estudando...')
+```
+
+#### 6.4.1 Sobreposição de métodos
+Métodos herdados podem ser sobrescritos dentro da classe.  
+Para usar a lógica do método sobrescrito e adicionar mais linhas de código é necessário passar ao método `super()` 
+que se refere a classe que está sendo herdada, para referenciar uma classe especifica dentro da cadeia de herança 
+é necessário passar o nome da classe com o método e por parâmetro o `self`.  
+
+```python
+class ClienteVip(Cliente):
+    def __init__(self, nome, sobrenome):
+        super().__init__(nome)
+        self.sobrenome = sobrenome
+
+    def falar(self):
+        Pessoa.falar(self)  # neste caso se refere a classe Pessoa especificamente.
+        super().falar()     # neste caso se refere a classe herdada (Cliente).
+        print(f'{self.nome} {self.sobrenome} é vip...')
 ```
 
 ## x. Referências
