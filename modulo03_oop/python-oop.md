@@ -27,12 +27,26 @@ class Pessoa:
     pass
 ```
 
-### 2.2. Importar classe
+### 2.2. Classe Abstrata
+Classe genérica que não vai ser estanciada, pode ter métodos concretos e abstratos.
+Para isso devemos importar o módulo abc (abstract base class).
 ```python
-from arquivo import Classe
+from abc import ABC, abstractmethod
+
+class A(ABC):
+    @abstractmethod
+    def falar(self):
+        pass
+
+class B(A):
+    def falar(self):
+        print(f'B Falando...')
+
+abst = B()
+abst.falar()
 ```
 
-## 3. Atributos
+### 2.3. Atributos
 Os atributos podem ser definidos direto dentro da classe **(Atributo de Classe)** 
 ou dentro dos métodos criados na classe **(Atributos da Instância)**.  
 
@@ -60,16 +74,16 @@ print(Cls.num)
 # 1 (onde o atributo ainda possui valor inicial.)
 ```
 
-## 4. Métodos
-### 4.1. Métodos de instância
-#### `__init__`
+### 2.4. Métodos
+#### 2.4.1. Métodos de instância
+##### `__init__`
 Pode ser usado como construtor da classe, apesar de não ser criado especificamente para isso, é chamado assim que a classe for instanciada.
 ```python
 class Pessoa:
     def __init__(self, nome):
         self.nome = nome
 ```
-#### `self`
+##### `self`
 Todos **métodos de instância** da classe recebem como primeiro atributo o `self`, 
 ele refere-se a instancia que foi criada a partir da classe.
 
@@ -85,7 +99,7 @@ class Pessoa:
 Atributos da classe podem ser declarados no construtor sendo atribuidos os valores que forem passados por parâmetro,
 como também serem criados diretos na classe sendo acessiveis para todas instancias criadas através do self.
 
-### 4.2. Métodos da classe
+#### 2.4.2. Métodos da classe
 Além dos **métodos de instância** que ficam disponiveis para cada objeto instanciado a partir da classe, 
 também podem ser criados métodos próprios da classe onde ficam acessiveis apenas para a classe em si 
 e não para objetos instanciados a partir da classe.
@@ -104,7 +118,7 @@ class Pessoa:
         return cls(nome, idade)
 ```
 
-### 4.3. Métodos estáticos
+#### 2.4.3. Métodos estáticos
 São métodos que **não recebem** o contexto da instância e da classe, 
 poderiam até ser criados fora da classe, mas se necessário podem ser criados dentro da classe.  
 Deve-se adicionar um decorator `@staticmethod` antes da assinatura do método.
@@ -121,15 +135,56 @@ class Pessoa:
         return rand
 ```
 
+#### 2.4.3. Métodos abstratos
+São métodos que **não possuem** um corpo apenas a assinatura do método, 
+geralmente são criados dentro de uma classe abstrata para serem sobrescritos 
+nos instâncias que herdarem dessa classe.  
 
+```python
+from abc import ABC, abstractmethod
+class Example(ABC):    
+    @abstractmethod
+    def sacar(self, valor):
+        pass
+```
 
-## 5. Encapsulamento
+## 3. Polimorfismo
+Em python o **único polimorfismo que a linguagem suporta** é por sobreposição,
+que é o princípio que permite que classes derivadas de uma mesma superclasse 
+tenham métodos iguais (de mesma assinatura) mas comportamentos diferentes. 
+Mesma assinatura = Mesma quantidade e tipo de parâmetros.
+
+```python
+from abc import ABC, abstractmethod
+
+class A(ABC):
+    @abstractmethod
+    def fala(self, msg):
+        pass
+
+class B(A):
+    def fala(self, msg):
+        print(f'B está falando {msg}')
+
+class C(A):
+    def fala(self, msg):
+        print(f'C está falando {msg}')
+
+b = B()
+c = C()
+b.fala('de Skate')
+# B está falando de Skate
+c.fala('de futebol')
+# C está falando de futebol
+```
+
+## 4. Encapsulamento
 O encapsulamento é um dos pilares da orientação a objetos. Serve para proteger dados da classe. 
 Encapsular os dados de uma aplicação significa evitar que estes sofram acessos indevidos.  
 Para isso, é criada uma estrutura onde são usados modificadores como `public, protected, private` para restringir a acesso a esses dados.  
 E métodos que podem ser utilizados por qualquer outra classe, sem causar inconsistências no desenvolvimento comumente chamados **getters e setters**.  
 
-### 5.1. Getters & Setters
+### 4.1. Getters & Setters
 Esses métodos são chamados logo que um objeto é instanciado a partir da classe, servem como um **filtro**.  
 
 O método `getter` obtém um valor para o atributo da instância. 
@@ -156,7 +211,7 @@ class Produto:
 
 ```
 
-### 5.2. Modificadores
+### 4.2. Modificadores
 
 Em python **não temos modificadores** para restringir o acesso a dados da classe. 
 Portanto ao nomear atributos e métodos segue-se uma **convenção**:  
@@ -188,14 +243,14 @@ class Dados:
         self._protegidos = valor
 ```
 
-## 6. Relações entre classes
+## 5. Relações entre classes
 
 - Associação (Usa outra classe)
 - Agregação (Tem outra classe)
 - Composição (É dono de outra classe)
 - Herança (É outra classe)
 
-### 6.1. Associação
+### 5.1. Associação
 Ela descreve um vínculo que ocorre entre classes.  
 A forma mais comum de implementar associação é ter um objeto como atributo de outro, neste exemplo, abaixo:
 
@@ -236,7 +291,7 @@ caneta = Caneta('Bic')
 escritor.ferramenta = caneta
 escritor.ferramenta.escrever()
 ```
-### 6.2. Agregação
+### 5.2. Agregação
 É um tipo especial de associação onde tenta-se demonstrar que as informações de um objeto (chamado objeto-todo) 
 precisam ser complementados pelas informações contidas em um ou mais objetos de outra classe (chamados objetos-parte) 
 conhecemos como **todo/parte**. Porém essas partes podem existir separadamente.  
@@ -281,7 +336,7 @@ print(carrinho.soma_total())
 # R$220
 ```
 
-### 6.3. Composição  
+### 5.3. Composição  
 Uma composição tenta representar também uma relação todo/parte. 
 No entanto, na composição o objeto-todo é responsável por criar e destruir suas partes. 
 Em uma composição um mesmo objeto-parte não pode se associar a mais de um objeto-todo.  
@@ -330,7 +385,7 @@ cliente1.lista_enderecos()
 del cliente1
 ```
 
-### 6.4. Herança 
+### 5.4. Herança 
 Um objeto pode ter métodos e atributos de outra classe por herança, 
 isso significa que a classe tem todas caracteristicas da classe herdada, 
 além de poder ter as suas próprias também.  
@@ -368,7 +423,7 @@ class Aluno(Pessoa):
         print(f'{self.nome} estudando...')
 ```
 
-#### 6.4.1 Sobreposição de métodos
+#### 5.4.1. Sobreposição de métodos
 Métodos herdados podem ser sobrescritos dentro da classe.  
 Para usar a lógica do método sobrescrito e adicionar mais linhas de código é necessário passar ao método `super()` 
 que se refere a classe que está sendo herdada, para referenciar uma classe especifica dentro da cadeia de herança 
@@ -386,6 +441,58 @@ class ClienteVip(Cliente):
         print(f'{self.nome} {self.sobrenome} é vip...')
 ```
 
-## x. Referências
+#### 5.4.2. Herança multipla
+Herança múltipla, em orientação a objetos, é o conceito de herança de duas ou mais classes.
+
+```python
+class A:
+    def falar(self):
+        print('Falando... Estou em A.')
+
+class B(A):
+    def falar(self):
+        print('Falando... Estou em B.')
+
+class C(B, A):
+    pass
+
+c = C()
+c.falar()
+# Falando... Estou em B.
+```
+
+#### 5.4.3. Mixin
+Especialmente no contexto do Python, um **mixin** é uma classe pai que fornece funcionalidade às subclasses, **mas não se destina a ser instanciado**.
+```python
+class LogMixin:
+    """
+    cria um arquivo de log com infos e errors.
+    """
+    @staticmethod
+    def write(msg):
+        with open('log.log', 'a+') as f:
+            f.write(msg)
+            f.write('\n')
+
+    def log_info(self, msg):
+        """
+        grava mensagem de info no arquivo
+        :param msg:
+        :return:
+        """
+        self.write(f'INFO: {msg}')
+
+
+    def log_error(self, msg):
+        """
+        grava mensagem de erro no arquivo
+        :param msg:
+        :return:
+        """
+        self.write(f'ERROR: {msg}')
+```
+
+## 6. Referências
 - https://www.udemy.com/course/python-3-do-zero-ao-avancado/
 - https://docs.python.org/pt-br/3/tutorial/
+- https://www.codigofluente.com.br/aula-15-python-orientacao-a-objeto-01/

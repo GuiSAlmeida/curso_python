@@ -24,3 +24,17 @@ p1.falar()
 c2 = ClienteVip('Deia', 30, 'Leite')
 c2.falar()
 
+# multipla herança
+from smartphone import Smartphone
+cel = Smartphone('Iphone')
+cel.conectar()
+cel.desligar()
+cel.ligar()
+cel.conectar()
+cel.conectar()
+cel.conectar()
+cel.desligar()
+cel.conectar()
+cel.desconectar()
+cel.desconectar()
+
