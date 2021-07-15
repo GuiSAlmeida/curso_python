@@ -76,24 +76,16 @@ print(Cls.num)
 
 ### 2.4. Métodos
 #### 2.4.1. Métodos de instância
-##### `__init__`
-Pode ser usado como construtor da classe, apesar de não ser criado especificamente para isso, é chamado assim que a classe for instanciada.
-```python
-class Pessoa:
-    def __init__(self, nome):
-        self.nome = nome
-```
+Qualquer método criado dentro da classe, ao instanciar um objeto pela classe vai receber esses métodos dela.
+
 ##### `self`
 Todos **métodos de instância** da classe recebem como primeiro atributo o `self`, 
 ele refere-se a instancia que foi criada a partir da classe.
 
 ```python
 class Pessoa:
-    def __init__(self, nome):
-        self.nome = nome
-
     def comer(self, alimento):
-        print(f'{self.nome} está comendo {alimento}.')
+        print(f'Pessoa está comendo {alimento}.')
 ```
 
 Atributos da classe podem ser declarados no construtor sendo atribuidos os valores que forem passados por parâmetro,
@@ -146,6 +138,108 @@ class Example(ABC):
     @abstractmethod
     def sacar(self, valor):
         pass
+```
+
+#### 2.4.4. Métodos "mágicos"
+São métodos especiais que você pode definir para adicionar "magia" às classes. 
+Eles estão sempre cercados por dois underlines (por exemplo, `__init__` ou `__lt__`).  
+Para ver todos métodos mágicos recomendo este [guia](https://rszalski.github.io/magicmethods/), 
+seguem alguns mais usados:
+
+##### `__new__`
+É o primeiro método a ser chamado na instanciação de um objeto. 
+Ele recebe a classe e, a seguir, quaisquer outros argumentos e passará para o `__init__`.
+.
+```python
+class Pessoa:
+    def __new__(cls, *args, **kwargs):
+        pass
+```
+
+##### `__init__`
+O inicializador da classe, é chamado assim que a classe for instanciada.
+```python
+class Pessoa:
+    def __init__(self, nome):
+        self.nome = nome
+```
+
+##### `__call__`
+Permite que uma instância de uma classe seja chamada como uma função. 
+Essencialmente, isso significa que `Pessoa()` é o mesmo que `Pessoa.__call__()`. 
+Observe que `__call__` leva um número variável de argumentos, 
+isso significa que você define `__call__` como faria com qualquer outra função, 
+usando quantos argumentos quiser.  
+
+```python
+class Pessoa:
+    def __call__(self, *args, **kwargs):
+        print(args)
+        print(kwargs)
+
+p = Pessoa()
+p(1, 2, 3, nome='Gui')
+# (1, 2, 3)
+# {'nome': 'Gui'}
+```
+##### `__setattr__`
+É uma solução de **encapsulamento**. Ele permite que você defina o comportamento para atribuição a um atributo, 
+independentemente da existência ou não desse atributo, 
+o que significa que você pode definir regras personalizadas para quaisquer alterações nos valores dos atributos.
+
+```python
+class Pessoa:
+    def __init__(self, name):
+        self.name = name
+        
+    def __setattr__(self, key, value):
+        if key != 'name':
+            self.__dict__[key] = value
+        print(key, value)
+```
+### 2.5. Metaclasses
+Em Python tudo é um objeto, incluindo classes. Metaclasses são as "classes" que criam classes.  
+`type` é uma metaclasse também.
+
+```python
+# type(name = nome da classe, bases = classes herdadas, namespace = atributos e métodos)
+M = type('metaclasse', (), {})  
+
+class Meta(type):
+    def __new__(mcs, name, bases, namespace):
+        if name == 'A':
+            return type.__new__(mcs, name, bases, namespace)
+
+        if 'attr_cls' in namespace:
+            del namespace['attr_cls']
+
+        return type.__new__(mcs, name, bases, namespace)
+```
+
+### 2.6. Enum (Python 3.4)
+Enum é uma classe em python para a criação de **enumerações**, 
+que são um conjunto de nomes simbólicos (membros) 
+vinculados a valores constantes e únicos. Os membros de uma enumeração 
+podem ser comparados por esses nomes simbólicos, 
+e a própria enumeração pode ser iterada. Um enum tem as seguintes características.  
+- Os enums são representações de string avaliadas de um objeto também chamado `repr()`.
+- O nome do enum é exibido usando a palavra-chave `name`.
+- Usando `type()`, podemos verificar os tipos de enum.  
+
+```python
+from enum import Enum
+
+class Directions(Enum):
+    right = 0
+    left = 1
+    up = 2
+    down = 3
+
+def move(direction):
+    if not isinstance(direction, Directions):
+        raise ValueError('Cannot move in this direction')
+
+    return f'Moving {direction.name} to position {direction.value}'
 ```
 
 ## 3. Polimorfismo
@@ -214,11 +308,11 @@ class Produto:
 ### 4.2. Modificadores
 
 Em python **não temos modificadores** para restringir o acesso a dados da classe. 
-Portanto ao nomear atributos e métodos segue-se uma **convenção**:  
+Portanto ao nomear atributos e métodos segue-se uma **convenção** da PEP8:  
 ```properties
 nome = public
-_nome = protected  
-__nome = private 
+_nome = protected
+__nome = private
 ```
 
 Na prática os atributos ou métodos ainda podem ser acessados e modificados, 
@@ -243,6 +337,38 @@ class Dados:
     @protegidos.setter
     def protegidos(self, valor):
         self._protegidos = valor
+```
+
+### 4.3. Type Hints (Python 3.5)
+Python possui tipagem dinâmica, onde os tipos são verificados durante a execução. 
+E também tipagem forte, todas as operações entre tipos diferentes devem ser explicitamente definidas 
+e operações não definidas entre tipos vão resultar em um erro.  
+Para isso o uso dos type hints pode ser de grande auxílio para programadores com background 
+em alguma linguagem estaticamente tipada como Java, Haskell e Go que tenha que 
+desenvolver algo maior do que um simples script em Python.  
+Muitas são as vantagens de seu uso como:
+- Servem como uma forma de documentação;
+- Otimizações em tempo de compilação;
+- Segurança ao analizar o programa;
+- Code-complete melhor;
+- É mais fácil de se achar em uma codebase extensa.
+
+Exemplos:
+```python
+from typing import Union
+
+# Definindo tipos de variáveis
+x: int = 10
+y: float = 10.5
+z: bool = False
+
+# Definindo tipos de argumentos e retorno de uma função
+def greeting(name: str) -> str:
+    return 'Hello ' + name
+
+# Definindo retorno com mais de um tipo com Union do módulo typing
+def fn(p1: float, p2: int) -> Union[int, float]:
+    return p1 * p2
 ```
 
 ## 5. Relações entre classes
@@ -498,3 +624,6 @@ class LogMixin:
 - https://www.udemy.com/course/python-3-do-zero-ao-avancado/
 - https://docs.python.org/pt-br/3/tutorial/
 - https://www.codigofluente.com.br/aula-15-python-orientacao-a-objeto-01/
+- https://rszalski.github.io/magicmethods/
+- https://docs.python.org/3/library/typing.html
+- https://diogommartins.medium.com/python-3-e-type-hints-40e80a9e8214
