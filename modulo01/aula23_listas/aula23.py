@@ -19,12 +19,14 @@ print(lista[1:5:2])
 l1 = [1, 2, 3]
 l2 = [4, 5, 6]
 
-l2.append('add')  # add no final da lista
+l2.append('add')        # add no final da lista
 l2.insert(0, 'banana')  # add no indice da lista
-l1.extend(l2)  # add valor o objeto passado
-l1.pop()  # remove valor ultimo indice
-del(l1[0:3])
-del(l1[0])
+l1.extend(l2)           # add valor o objeto passado
+l1.pop()                # remove valor ultimo indice
+
+del (l1[0:3])
+del (l1[0])
+
 print(l1)
 print(max(l1))
 
