@@ -1,5 +1,5 @@
 import os
-from utils import size_format
+from aula_files.utils import size_format
 
 path_find = input('Enter a path: ')
 term = input('Enter a term: ')

@@ -11,3 +11,7 @@ incoming/
 platform.env
 .vscode
 .cache
+
+modulo04/aula_template/email_data.py
+modulo04/aula_compactar/descompactados
+modulo04/aula_compactar/arquivo.zip
