@@ -3,6 +3,7 @@ dicionario - estrutura de dados que suporta um par de chave e valor
 *chaves são únicas*
 """
 # criar dicionario:
+import copy
 dict1 = {'chave1': 'valor1'}
 dict2 = dict(chave3='valor3')
 
@@ -80,10 +81,9 @@ novo_dict2 = dict2.copy()
 
 # Para copiar realmente um novo dicionario
 # sem estar linkado com dicionario que foi copiado usa-se:
-import copy
 novo_dict3 = copy.deepcopy(dict3)
 
-#casting para dicionario (listas, tuplas)
+# casting para dicionario (listas, tuplas)
 lista = [
     ['c1', 1],
     ['c2', 2],
